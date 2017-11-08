@@ -50,6 +50,7 @@ typeform_for_emphclass_SOURCES = typeform_for_emphclass.c
 uplow_with_unicode_SOURCES = uplow_with_unicode.c
 check_metadata_SOURCES = check_metadata.c
 table_dev_SOURCES = table-dev.c
+suggestChunks_SOURCES = suggestChunks.c
 
 # Note that this is not currently included in check_programs below
 # otherwise make check would never complete.
@@ -92,8 +93,9 @@ program_TESTS =					\
 	squash_space				\
 	typeform				\
 	typeform_for_emphclass			\
-	uplow_with_unicode				\
-	table-dev
+	uplow_with_unicode			\
+	table-dev				\
+	suggestChunks
 
 check_PROGRAMS = $(program_TESTS)
 

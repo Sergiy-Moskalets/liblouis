@@ -77,7 +77,7 @@ extern int printRule(TranslationTableRule *rule, widechar *rule_string) {
 		return 1; }
 }
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG
 #define debug(fmt, ...) do {                                 \
@@ -88,7 +88,7 @@ extern int printRule(TranslationTableRule *rule, widechar *rule_string) {
 #define debug(fmt, ...)
 #endif
 
-static int find_matching_rules(widechar *text,
+extern int find_matching_rules(widechar *text,
                                int text_len,
                                widechar *braille,
                                int braille_len,
