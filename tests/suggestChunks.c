@@ -13,7 +13,6 @@ without any warranty. */
 #include "internal.h"
 
 extern void loadTable(const char *tableList);
-extern int find_matching_rules(widechar *text, int text_len, widechar *braille, int braille_len, char *data);
 
 int main(int argc, char **argv) {
 
@@ -21,28 +20,30 @@ int main(int argc, char **argv) {
     "sbs-table-dev/sbs.dis,"			\
     "sbs-table-dev/sbs-de-core6.cti,"		\
     "sbs-table-dev/sbs-apos.cti,"		\
-    "sbs-table-dev/sbs-de-accents.cti,"		\
-    "sbs-table-dev/sbs-contractions.ctb,"	\
-    "sbs-table-dev/sbs-patterns.dic";
+    "sbs-table-dev/sbs-de-accents.cti,"	\
+    "sbs-table-dev/sbs-contractions.ctb";
 
-  char *text          = "achtunddreißigtausenddreihundertsiebzehn";
-  char *braille       = "A4TUNDDR3^IGT1SENDDR3HUNDERTS0BZEHN";
-  char *hyphen_string[40];
+  char *text    = "achtunddreißigtausenddreihundertsiebzehn";
+  char *braille = "A4TUNDDR3^IGT1SENDDR3HUNDERTS0BZEHN";
 
   int in_len = strlen(text);
   int out_len = in_len;
 
-  widechar *inbuf = malloc(sizeof(widechar) * in_len);
-  widechar *outbuf = malloc(sizeof(widechar) * out_len);
+  widechar *inbuf = malloc(sizeof(widechar) * (in_len + 1));
+  widechar *outbuf = malloc(sizeof(widechar) * (out_len + 1));
 
   in_len = _lou_extParseChars(text, inbuf);
   out_len = _lou_extParseChars(braille, outbuf);
-  int result = 0;
+  inbuf[in_len] = '\0';
+  outbuf[out_len] = '\0';
 
   loadTable(tableList);
 
-  result = find_matching_rules(inbuf, in_len, outbuf, out_len, hyphen_string);
+  char *hyphen_string = malloc(sizeof(char) * (in_len + 2));
+  
+  if (!suggestChunks(inbuf, outbuf, hyphen_string))
+    return 1;
 
-  return 1;
+  return 0;
   //  return strcmp("^00x00$", hyphen_string);
 }
