@@ -116,8 +116,6 @@ static int find_matching_rules(widechar *text,
 	
 	/* finish */
 	if (text_len == 0 && braille_len == 0) {
-		if (data[-1] != '1')
-			return 0;
 		data[-1] = '$';
 		return 1; }
 	
@@ -212,8 +210,7 @@ static int find_matching_rules(widechar *text,
 				while (k < rule->charslen - 1) {
 					if (data[k + 1] == '>') {
 						data[k++] = '1';
-						memset(&data[k], '-', text_len - k);
-						break; }
+						memset(&data[k], '-', text_len - k); }
 					else
 						data[k++] = 'x'; }}
 			if (data[rule->charslen] == '>') {
@@ -224,38 +221,10 @@ static int find_matching_rules(widechar *text,
 			debug("%s", data);
 			
 			/* recur */
-			switch (data[rule->charslen - 1]) {
-			case 'x':
-				data[rule->charslen - 1] = '0';
-				debug("%s", data);
-				if (find_matching_rules(&text[rule->charslen], text_len - rule->charslen,
-				                        &braille[rule->dotslen], braille_len - rule->dotslen,
-				                        &data[rule->charslen])) {
-					char *data_tmp = (char *)malloc((text_len - rule->charslen + 1) * sizeof(char));
-					memcpy(data_tmp, &data[rule->charslen - 1], text_len - rule->charslen + 1);
-					data[rule->charslen - 1] = '1';
-					debug("%s", data);
-					memset(&data[rule->charslen], '-', text_len - rule->charslen);
-					if (find_matching_rules(&text[rule->charslen], text_len - rule->charslen,
-					                        &braille[rule->dotslen], braille_len - rule->dotslen,
-					                        &data[rule->charslen])
-					    && memcmp(&data_tmp[1], &data[rule->charslen], text_len - rule->charslen) == 0)
-						data[rule->charslen - 1] = 'x';
-					else
-						memcpy(&data[rule->charslen - 1], data_tmp, text_len - rule->charslen + 1);
-					debug("%s", data);
-					free(data_tmp);
-					goto success; }
-				else {
-					data[rule->charslen - 1] = '1';
-					memset(&data[rule->charslen], '-', text_len - rule->charslen);
-					debug("%s", data); }
-			case '0':
-			case '1':
-				if (find_matching_rules(&text[rule->charslen], text_len - rule->charslen,
-				                        &braille[rule->dotslen], braille_len - rule->dotslen,
-				                        &data[rule->charslen]))
-					goto success; }
+			if (find_matching_rules(&text[rule->charslen], text_len - rule->charslen,
+			                        &braille[rule->dotslen], braille_len - rule->dotslen,
+			                        &data[rule->charslen]))
+				goto success;
 			
 		  inhibit:
 			debug("** rule inhibited **");
