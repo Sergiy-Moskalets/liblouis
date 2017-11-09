@@ -77,7 +77,7 @@ extern int printRule(TranslationTableRule *rule, widechar *rule_string) {
 		return 1; }
 }
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
 #define debug(fmt, ...) do {                                 \
